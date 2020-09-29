@@ -3,23 +3,17 @@ class User < ActiveRecord::Base
     has_many :pantry_ingredients
     has_many :ingredients, through: :pantry_ingredients
     has_many :favorite_recipes
-    has_many :recipes, through: :favorite_recipes
-
-    def create_user
-        name = get_username
-        user = nil
-          User.all.each do |u| if u.name == name
-            user = u
-          end
-        end
-          if user == nil
-          User.create(name: name)
-          user = User.last 
-          end
-        end
-
+    has_many :recipes, through: :favorite_recipes  
+    
+    
     def self.find_user(user_name)
         User.all.find_by(name: user_name)
+      end
+
+    def pantry
+        pantry_ids = self.pantry_ingredients.map {|ing|  ing.ingredient_id}
+        pantry = Ingredient.all.select {|ing| pantry_ids.include?(ing.id)}
+        pantry_items = pantry.map {|ing| ing.name}
     end
 
 

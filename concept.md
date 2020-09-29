@@ -23,17 +23,26 @@ Has many ingredients
 has many users through fav
 
 Ingredient: name, 
-has many users through Pantry_ingredient -->
+has many users through Pantry_ingredient
 has many recipes through recipe ingredient
 
 Favorite Recipes: user_id, recipe_id
 belongs to user
 belongs to recipe
 
-<!-- Recipe_Ingredient, recipe_id, ingredient_id
+Recipe_Ingredient, recipe_id, ingredient_id
 belongs to :recipe
 belongs to :ingredient
 
 Pantry_Ingredient, ingredient_id, user_id
 belongs to :ingredient
 belongs to :user
+
+
+Workflow:
+1. welcome message (can we store username and use for all these methods?)
+2. what do you want to do today? (a.view pantry b. view favorites c. search recipes)
+    2a. list pantry items. ablity to add and remove
+    2b. list favorite recipes(select and view recipe), can remove
+    2c. list user pantry items and select 3 for search
+3. back to home (2)
