@@ -38,30 +38,37 @@ class RecipeApp
   
 
   def view_pantry
-      # user = create_user
-      pantry_names = @user.pantry_names
+      @user.reload
       prompt = TTY::Prompt.new
-      selection = prompt.select("Select an item to remove. You can also add new item, or return home") do |menu|
-        menu.choice "Add Item"
-        pantry_names.each {|name| menu.choice name}
-        menu.choice "Home"      
-      end
+      menu_prompt = @user.pantry_names.push("Add Item", "Remove Ingredient", "Home")
+      selection = prompt.select("Select an item to remove. You can also add new item, or return home", (menu_prompt))
       if selection == "Home"
         home
       elsif selection == "Add Item"
-        ingredient_prompt
-        @user.create_pantry_ingredients
+        @user.create_pantry_ingredients 
         view_pantry
+      elsif selection == "Remove Ingredient"
+        
+        selection2 = rm_ingredient_prompt
+        if selection2  == "Back to Home"
+          home
+        elsif selection2 ==  "Back to Pantry"
+          view_pantry
+        elsif @user.pantry_names.include?(selection2)
+        ing_to_remove = @user.pantry_ingredients.find{|pantry_ingredient| pantry_ingredient.ingredient.name == selection2}
+        PantryIngredient.destroy(ing_to_remove.id)
+        puts "#{Ingredient.all.find_by_name(selection2).name} has been removed from your pantry"
+        view_pantry 
+        end
+        
       else
-        ing_to_remove = Ingredient.all.find_by_name(selection).id
-        removed_ing = Ingredient.all.find_by_name(selection).name
-        @user.pantry_ingredients.destroy(ing_to_remove)
-        puts "#{removed_ing} has been removed from your pantry"
-        view_pantry
-      end
+        #show nutritional facts
+        home
+    end
   end
 
   def view_favorite_recipes
+    @user.reload
     prompt = TTY::Prompt.new
       selection = prompt.select("Select a recipe to see more info, or return home") do |menu|
         @user.favorite_recipes.each {|rec| menu.choice rec.name}
@@ -87,16 +94,14 @@ class RecipeApp
   end
 
   def search
+    @user.reload
     if @user.pantry.length < 3
       puts "You must have at least 3 items in your pantry before searching."
-      # 3.times{user.create_pantry_ingredients}    
       view_pantry
     else
       prompt = TTY::Prompt.new
       selection = prompt.multi_select("What would you like to cook with?", (@user.pantry_names))
     end
-    # prompt = TTY::Prompt.new
-    # selection = prompt.multi_select("What would you like to cook with?", (user.pantry_names))
     recipes = get_recipes_from_api(selection)
     prompt = TTY::Prompt.new
       recipes_select = prompt.multi_select("What recipe would you like to add to your favorites?", (recipes))
@@ -114,3 +119,13 @@ def ingredient_prompt
   prompt = TTY::Prompt.new
   prompt.ask("What ingredients do you have in your kitchen?")
 end
+
+def rm_ingredient_prompt
+  @user.reload
+  menu_prompt = @user.pantry_names.push("Back to Home", "Back to Pantry")
+  prompt = TTY::Prompt.new
+        selection = prompt.select("Select an ingredient to remove", (menu_prompt))
+end
+
+
+

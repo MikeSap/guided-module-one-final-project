@@ -11,28 +11,23 @@ class User < ActiveRecord::Base
       end
 
     def pantry
-        pantry_ids = self.pantry_ingredients.map {|ing|  ing.ingredient_id}
-        pantry = Ingredient.all.select {|ing| pantry_ids.include?(ing.id)}
+      self.pantry_ingredients.map {|pantry_ingredient| pantry_ingredient.ingredient}      
     end
 
     def pantry_names
-      pantry_names = pantry.map {|ing| ing.name}
+      pantry.map {|ing| ing.name}
     end
 
 
     def create_pantry_ingredients
-        ing = ingredient_prompt
-        found_ingredient = nil
-       Ingredient.all.each do |i| if i.name == ing     
-         found_ingredient = i
-       end
-     end
-       if found_ingredient == nil
-         Ingredient.create(name: ing)
-         PantryIngredient.create(ingredient_id: Ingredient.last.id, user_id: self.id)
-       else
-         PantryIngredient.create(ingredient_id: found_ingredient.id, user_id: self.id)
-       end  
-     end
+      ing = ingredient_prompt
+     found_ingredient = Ingredient.all.find {|i| i.name == ing}   
+     if found_ingredient == nil
+       new_ingredient = Ingredient.create(name: ing)
+       PantryIngredient.create(ingredient_id: new_ingredient.id, user_id: self.id)
+     else
+       PantryIngredient.create(ingredient_id: found_ingredient.id, user_id: self.id)
+     end  
+    end
 
 end
