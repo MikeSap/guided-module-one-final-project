@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
     end
 
 
-    def create_pantry_ingredients
+    def create_pantry_ingredients(ingredient)
         ing = ingredient_prompt
         found_ingredient = nil
        Ingredient.all.each do |i| if i.name == ing     
@@ -29,9 +29,9 @@ class User < ActiveRecord::Base
      end
        if found_ingredient == nil
          Ingredient.create(name: ing)
-         PantryIngredient.create(ingredient_id: Ingredient.last.id, user_id: self.id)
+         PantryIngredient.create(ingredient_id: Ingredient.last.id, user_id: @user.id)
        else
-         PantryIngredient.create(ingredient_id: found_ingredient.id, user_id: self.id)
+         PantryIngredient.create(ingredient_id: found_ingredient.id, user_id: @user.id)
        end  
      end
 

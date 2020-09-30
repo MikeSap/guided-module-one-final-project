@@ -43,13 +43,12 @@ class RecipeApp
       prompt = TTY::Prompt.new
       selection = prompt.select("Select an item to remove. You can also add new item, or return home") do |menu|
         menu.choice "Add Item"
-        pantry_names.each {|name| menu.choice name}
-        menu.choice "Home"      
+        pantry_names.each {|name|menu.choice}
+        menu.choice "Home"    
       end
       if selection == "Home"
         home
       elsif selection == "Add Item"
-        ingredient_prompt
         @user.create_pantry_ingredients
         view_pantry
       else
