@@ -55,3 +55,8 @@ When recipes are added to favorites, they are stored as a recipe, and the contai
 
 Maybe remove the recipe class all together and tie recipe_ingredients to favorite recipes
 
+
+@user
+print recipe from favorite recipe menu
+
+
