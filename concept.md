@@ -58,5 +58,6 @@ Maybe remove the recipe class all together and tie recipe_ingredients to favorit
 
 @user
 print recipe from favorite recipe menu
+add review and edit reviews
 
 
