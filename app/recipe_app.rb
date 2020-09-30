@@ -35,7 +35,7 @@ class RecipeApp
           exit
         end
   end
-
+  
 
   def view_pantry
       # user = create_user
@@ -49,18 +49,19 @@ class RecipeApp
       if selection == "Home"
         home
       elsif selection == "Add Item"
+        ingredient_prompt
         @user.create_pantry_ingredients
-        home
+        view_pantry
       else
         ing_to_remove = Ingredient.all.find_by_name(selection).id
         removed_ing = Ingredient.all.find_by_name(selection).name
         @user.pantry_ingredients.destroy(ing_to_remove)
         puts "#{removed_ing} has been removed from your pantry"
-        home
+        view_pantry
       end
   end
 
-  def view_favorite_recipesr
+  def view_favorite_recipes
     prompt = TTY::Prompt.new
       selection = prompt.select("Select a recipe to see more info, or return home") do |menu|
         @user.favorite_recipes.each {|rec| menu.choice rec.name}
@@ -107,3 +108,9 @@ class RecipeApp
   end
 
 end 
+
+
+def ingredient_prompt
+  prompt = TTY::Prompt.new
+  prompt.ask("What ingredients do you have in your kitchen?")
+end
