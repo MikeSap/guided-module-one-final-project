@@ -13,7 +13,10 @@ class User < ActiveRecord::Base
     def pantry
         pantry_ids = self.pantry_ingredients.map {|ing|  ing.ingredient_id}
         pantry = Ingredient.all.select {|ing| pantry_ids.include?(ing.id)}
-        pantry_items = pantry.map {|ing| ing.name}
+    end
+
+    def pantry_names
+      pantry_names = pantry.map {|ing| ing.name}
     end
 
 

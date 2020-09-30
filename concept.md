@@ -19,16 +19,19 @@ has many recipes through fav
 
 
 Recipe: name
-Has many ingredients
+has_many :recipe_ingredients
+Has many ingredients through recipe ing
+has_many :favorite_recipes
 has many users through fav
 
 Ingredient: name, 
+has many pantry ingredients
 has many users through Pantry_ingredient
+has many ingredients
 has many recipes through recipe ingredient
 
 Favorite Recipes: user_id, recipe_id
 belongs to user
-belongs to recipe
 
 Recipe_Ingredient, recipe_id, ingredient_id
 belongs to :recipe
@@ -46,3 +49,9 @@ Workflow:
     2b. list favorite recipes(select and view recipe), can remove
     2c. list user pantry items and select 3 for search
 3. back to home (2)
+
+
+When recipes are added to favorites, they are stored as a recipe, and the containing ingredients are stored as recipe_ingredients. 
+
+Maybe remove the recipe class all together and tie recipe_ingredients to favorite recipes
+
