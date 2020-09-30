@@ -28,6 +28,7 @@ class User < ActiveRecord::Base
      else
        PantryIngredient.create(ingredient_id: found_ingredient.id, user_id: self.id)
      end  
+     
     end
 
 end

@@ -114,7 +114,6 @@ class RecipeApp
 
 end 
 
-
 def ingredient_prompt
   prompt = TTY::Prompt.new
   prompt.ask("What ingredients do you have in your kitchen?")
