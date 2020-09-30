@@ -1,9 +1,6 @@
 require_relative "../lib/api_communicator.rb"
 require_relative '../config/environment'
-require_relative "../lib/command_line_interface.rb"
+require_relative "../app/recipe_app.rb"
 
-
-
-welcome
-home
-
+app = RecipeApp.new
+app.run 
