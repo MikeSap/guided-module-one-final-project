@@ -27,15 +27,9 @@ class User < ActiveRecord::Base
 
 
     def create_pantry_ingredients
-      ing = ingredient_prompt
-     found_ingredient = Ingredient.all.find {|i| i.name == ing}   
-     if found_ingredient == nil
-       new_ingredient = Ingredient.create(name: ing)
-       PantryIngredient.create(ingredient_id: new_ingredient.id, user_id: self.id)
-     else
-       PantryIngredient.create(ingredient_id: found_ingredient.id, user_id: self.id)
-     end  
-     
+      ing = ingredient_prompt.strip.downcase
+     found_ingredient = Ingredient.find_or_create_by(name: ing.to_s.titleize)  
+       PantryIngredient.find_or_create_by(ingredient_id: found_ingredient.id, user_id: self.id)       
     end
 
 end

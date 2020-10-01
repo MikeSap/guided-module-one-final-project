@@ -51,20 +51,21 @@ Workflow:
 3. back to home (2)
 
 
-When recipes are added to favorites, they are stored as a recipe, and the containing ingredients are stored as recipe_ingredients. 
+ 
 
-Maybe remove the recipe class all together and tie recipe_ingredients to favorite recipes
+
 
 
 
 add review and edit reviews (refactor)
 open url in browser when fav recipe is selected
 
-find_or_create_by for :
-favorite recipe, ingredients, user, pantry_ingredient
 
-.downcase all user input
-.capitalize on reading 
+
+create view, edit review method -lists recipes where review !=nil 
+review- lists all recipes
+
+add view, edit reviews from the home menu 
 
 make remove methods
 def remove (arg)

@@ -16,10 +16,7 @@ class RecipeApp
   def login_or_signup
     puts "Enter your name to sign up or login to Recipalooza!"
     name = gets.chomp.strip.downcase 
-    @user = User.all.find{|u|u.name == name}
-     if @user == nil 
-      @user = User.create(name: name.to_s.titleize) 
-     end 
+    @user = User.all.find_or_create_by(name: name.to_s.titleize)
   end 
 
   def home
@@ -32,6 +29,8 @@ class RecipeApp
         elsif selection == "Search Recipes"
           search
         else
+
+          ## add selection to view or edit recipe reviews 
           exit
         end
   end
@@ -71,42 +70,23 @@ class RecipeApp
       selection = view_favorite_recipes_prompt
       if selection == "Back to Home"
         home
-      elsif selection == "Rate or Update Reviews"
-        selection2 = review_recipe_prompt
-
+      elsif selection == "Remove a Recipe"        
+        selection2 = remove_recipe_prompt
         if selection2 == "Back to Home"
           home
-        elsif selection2 == "Back to Favorite Recipes"
-          view_favorite_recipes
-        else
-          puts "Type a review for #{selection2}"
-          review = gets.chomp.strip.downcase
-          reviewed_rec = @user.favorite_recipes.find{|rec| rec.name == selection2}
-          reviewed_rec.review= review
-          reviewed_rec.save
-          view_favorite_recipes
-        end
-
-      elsif selection == "Remove a Recipe"        
-        selection3 = remove_recipe_prompt
-
-        if selection3 == "Back to Home"
-          home
-          elsif selection3 == "Back to Favorite Recipes"
+          elsif selection2 == "Back to Favorite Recipes"
             view_favorite_recipes
           else
-        rec_to_remove = @user.favorite_recipes.find_by_name(selection3).id
-        removed_name = @user.favorite_recipes.find_by_name(selection3).name
+        rec_to_remove = @user.favorite_recipes.find_by_name(selection2).id
+        removed_name = @user.favorite_recipes.find_by_name(selection2).name
         @user.favorite_recipes.destroy(rec_to_remove)      
         puts "#{removed_name} has been removed from your favorite recipes"
         home
           end
-
         elsif @user.fav_recipe_names.include?(selection)
         recipe_id =  @user.favorite_recipes.find {|rec| rec.name == selection}.recipe_id
         url = recipe_instructions(recipe_id)
         puts TTY::Link.link_to(selection, url)
-        # url
         home
       end
   end
@@ -121,18 +101,41 @@ class RecipeApp
      selection = recipe_search_prompt
     end
     recipes = get_recipes_from_api(selection)
-    binding.pry 
     recipe_names = recipes.map { |key,val| key.to_s.titleize}
     prompt = TTY::Prompt.new
     recipes_select = prompt.multi_select("What recipes would you like to add to your favorites?", (recipe_names))
       recipes_select.each do |rec| 
-      FavoriteRecipe.create(name:rec, user_id: @user.id, recipe_id: recipes[rec])
+      FavoriteRecipe.find_or_create_by(name:rec, user_id: @user.id, recipe_id: recipes[rec])
       puts "You added #{rec} to your favorites!"
       end   
     home
   end
 
 
+  def view_edit_reviews
+
+  elsif selection == "Rate or Update Reviews"
+    selection2 = review_recipe_prompt
+
+    if selection2 == "Back to Home"
+      home
+    elsif selection2 == "Back to Favorite Recipes"
+      view_favorite_recipes
+    else
+      puts "Type a review for #{selection2}"
+      review = gets.chomp.strip.downcase
+      reviewed_rec = @user.favorite_recipes.find{|rec| rec.name == selection2}
+      reviewed_rec.review= review
+      reviewed_rec.save
+      view_favorite_recipes
+    end
+    # add edit reviews 
+     # all favorite recipes 
+       ## gets.chomp that edits the reviews
+    # list fav recipes that have reviews
+      # selected, it prints the reviews
+    
+  end 
 end 
 
 
