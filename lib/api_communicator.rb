@@ -15,8 +15,7 @@ def get_recipes_from_api(selection)
     response
 end 
 
-   
-puts get_recipes_from_api(['mango', 'banana', 'pear'])
+
 
 def recipe_instructions(recipe_id)
     url1 = "https://api.spoonacular.com/recipes/"
@@ -29,4 +28,3 @@ def recipe_instructions(recipe_id)
     response
 end 
 
-puts recipe_instructions(520245)
