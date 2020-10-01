@@ -44,6 +44,8 @@ class RecipeApp
       elsif selection == "Add Item"
         @user.create_pantry_ingredients 
         view_pantry
+      elsif selection == "Search for Recipes"
+        search
       elsif selection == "Remove Ingredient"
         
         selection2 = rm_ingredient_prompt
@@ -69,6 +71,7 @@ class RecipeApp
       if selection == "Back to Home"
         home
       elsif selection == "Remove a Recipe"
+        
         selection2 = remove_recipe_prompt
         if selection2 == "Back to Home"
           home
@@ -81,9 +84,9 @@ class RecipeApp
         puts "#{removed_name} has been removed from your favorite recipes"
         home
           end
-        elsif binding.pry @user.fav_recipe_names.include?(selection)
+        elsif @user.fav_recipe_names.include?(selection)
         recipe_id =  @user.favorite_recipes.find {|rec| rec.name == selection}.recipe_id
-        url = view_instructions(recipe_id)
+        url = recipe_instructions(recipe_id)
         url
         home
       end
@@ -111,15 +114,18 @@ class RecipeApp
 
 end 
 
-
 def ingredient_prompt
   prompt = TTY::Prompt.new
   prompt.ask("What ingredients do you have in your kitchen?")
 end
 
+def recipe_search_prompt
+  
+end
+
 def rm_ingredient_prompt
   @user.reload
-  menu_prompt = @user.pantry_names.push("Back to Home", "Back to Pantry")
+  menu_prompt = @user.pantry_names.push("Back to Pantry", "Back to Home")
   prompt = TTY::Prompt.new
   prompt.select("Select an ingredient to remove", (menu_prompt))
 end
@@ -127,7 +133,7 @@ end
 def view_pantry_prompt
   @user.reload
   prompt = TTY::Prompt.new
-  menu_prompt = @user.pantry_names.push("Add Item", "Remove Ingredient", "Home")
+  menu_prompt = @user.pantry_names.push("Add Item","Search for Recipes", "Remove Ingredient", "Back to Home")
   prompt.select("Select an item to remove. You can also add new item, or return home", (menu_prompt))
 end
 
