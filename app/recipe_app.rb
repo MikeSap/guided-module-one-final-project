@@ -102,8 +102,7 @@ class RecipeApp
     recipe_names = recipes.map { |key,val| key}
     prompt = TTY::Prompt.new
       recipes_select = prompt.multi_select("What recipe would you like to add to your favorites?", (recipe_names))
-      recipes_select.each do
-      |rec| binding.pry 
+      recipes_select.each do |rec| 
       FavoriteRecipe.create(name:rec, user_id: @user.id, recipe_id: recipes[rec])
       puts "You added #{rec} to your favorites!"
       end   
