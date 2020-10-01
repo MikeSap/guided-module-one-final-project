@@ -105,6 +105,7 @@ end
     else 
       all_user_reviews = FavoriteRecipe.all.where(name: selection)
       review = all_user_reviews.each{|recipe| puts "'#{recipe.review}' reviewed by: #{User.find_by(id: recipe.user_id).name}"}
+      view_edit_reviews
     end 
 end 
 
