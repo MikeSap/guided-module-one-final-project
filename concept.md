@@ -56,10 +56,15 @@ When recipes are added to favorites, they are stored as a recipe, and the contai
 Maybe remove the recipe class all together and tie recipe_ingredients to favorite recipes
 
 
-@user
-print recipe from favorite recipe menu
-add review and edit reviews
 
-find_or_create_by
+add review and edit reviews (refactor)
+open url in browser when fav recipe is selected
+
+find_or_create_by for :
+favorite recipe, ingredients, user, pantry_ingredient
+
 .downcase all user input
 .capitalize on reading 
+
+make remove methods
+def remove (arg)

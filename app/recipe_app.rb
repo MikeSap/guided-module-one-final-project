@@ -70,20 +70,37 @@ class RecipeApp
       selection = view_favorite_recipes_prompt
       if selection == "Back to Home"
         home
-      elsif selection == "Remove a Recipe"
-        
-        selection2 = remove_recipe_prompt
+      elsif selection == "Rate or Update Reviews"
+        selection2 = review_recipe_prompt
+
         if selection2 == "Back to Home"
           home
-          elsif selection2 == "Back to Favorite Recipes"
+        elsif selection2 == "Back to Favorite Recipes"
+          view_favorite_recipes
+        else
+          puts "Type a review for #{selection2}"
+          review = gets.chomp
+          reviewed_rec = @user.favorite_recipes.find{|rec| rec.name == selection2}
+          reviewed_rec.review= review
+          reviewed_rec.save
+          view_favorite_recipes
+        end
+
+      elsif selection == "Remove a Recipe"        
+        selection3 = remove_recipe_prompt
+
+        if selection3 == "Back to Home"
+          home
+          elsif selection3 == "Back to Favorite Recipes"
             view_favorite_recipes
           else
-        rec_to_remove = @user.favorite_recipes.find_by_name(selection2).id
-        removed_name = @user.favorite_recipes.find_by_name(selection2).name
+        rec_to_remove = @user.favorite_recipes.find_by_name(selection3).id
+        removed_name = @user.favorite_recipes.find_by_name(selection3).name
         @user.favorite_recipes.destroy(rec_to_remove)      
         puts "#{removed_name} has been removed from your favorite recipes"
         home
           end
+
         elsif @user.fav_recipe_names.include?(selection)
         recipe_id =  @user.favorite_recipes.find {|rec| rec.name == selection}.recipe_id
         url = recipe_instructions(recipe_id)
@@ -92,19 +109,19 @@ class RecipeApp
       end
   end
 
+
   def search
     @user.reload
     if @user.pantry.length < 3
       puts "You must have at least 3 items in your pantry before searching."
       view_pantry
     else
-      prompt = TTY::Prompt.new
-      selection = prompt.multi_select("What would you like to cook with?", (@user.pantry_names))
+     selection = recipe_search_prompt
     end
     recipes = get_recipes_from_api(selection)
     recipe_names = recipes.map { |key,val| key}
     prompt = TTY::Prompt.new
-      recipes_select = prompt.multi_select("What recipe would you like to add to your favorites?", (recipe_names))
+    recipes_select = prompt.multi_select("What recipes would you like to add to your favorites?", (recipe_names))
       recipes_select.each do |rec| 
       FavoriteRecipe.create(name:rec, user_id: @user.id, recipe_id: recipes[rec])
       puts "You added #{rec} to your favorites!"
@@ -114,13 +131,16 @@ class RecipeApp
 
 end 
 
+
+
 def ingredient_prompt
   prompt = TTY::Prompt.new
   prompt.ask("What ingredients do you have in your kitchen?")
 end
 
 def recipe_search_prompt
-  
+  prompt = TTY::Prompt.new
+  selection = prompt.multi_select("What would you like to cook with?", (@user.pantry_names))
 end
 
 def rm_ingredient_prompt
@@ -140,7 +160,7 @@ end
 def view_favorite_recipes_prompt
   @user.reload
   prompt = TTY::Prompt.new
-  menu_prompt = @user.fav_recipe_names.push("Remove a Recipe", "Back to Home")
+  menu_prompt = @user.fav_recipe_names.push("Rate or Update Reviews", "Remove a Recipe", "Back to Home")
    prompt.select("Select a recipe to see more info, or return home", (menu_prompt))    
 end
 
@@ -151,3 +171,12 @@ def remove_recipe_prompt
   prompt.select("Select a recipe to remove", (menu_prompt))
 end
 
+# def select_favorite_recipes_prompt
+
+# end
+
+def review_recipe_prompt
+  prompt = TTY::Prompt.new
+  menu_prompt = @user.fav_recipe_names.push("Back to Favorite Recipes", "Back to Home")
+  prompt.select("Select a recipe to review", (menu_prompt))
+end
