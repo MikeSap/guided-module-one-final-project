@@ -100,11 +100,10 @@ end
   end 
 
   def view_edit_reviews
-    @user.reload
     selection = view_edit_review_prompt
+    binding.pry 
     if selection == "Update a Review" 
-      @user.favorite_recipes. ##recipes without reviews 
-      #selection = review_recipe_prompt
+        update_review_prompt 
     elsif selection2 == "Add a Review"
         @user.favorite_recipes #recipes with reviews 
         puts "Type a review for #{selection2}"
@@ -154,7 +153,7 @@ end
 def view_favorite_recipes_prompt
   @user.reload
   prompt = TTY::Prompt.new
-  menu_prompt = @user.fav_recipe_names.push("Rate or Update Reviews", "Remove a Recipe", "Back to Home")
+  menu_prompt = @user.fav_recipe_names.push("Remove a Recipe", "Back to Home")
    prompt.select("Select a recipe to see more info, or return home", (menu_prompt))    
 end
 
@@ -165,9 +164,20 @@ def remove_recipe_prompt
   prompt.select("Select a recipe to remove", (menu_prompt))
 end
 
+def recipe_with_reviews 
+  rec = @user.favorite_recipes.where(review: nil)
+  rec.map{|rec|rec.name}
+end 
+
+def recipe_with_reviews 
+  rec = @user.favorite_recipes.where(review: !nil)
+  rec.map{|rec|rec.name}
+end
+
 def view_edit_review_prompt
+  @user.reload
   prompt = TTY::Prompt.new
-  menu_prompt = @user.favorite_recipes.where(review: !nil).push("Update a Review", "Add a Review", "Back to Favorite Recipes", "Back to Home")
+  menu_prompt = recipe_with_reviews.push("Update a Review", "Add a Review", "Back to Favorite Recipes", "Back to Home")
   prompt.select("Select a recipe to view, update a recipe, or add a review.", (menu_prompt))
 end
 
