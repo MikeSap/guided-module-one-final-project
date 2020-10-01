@@ -102,9 +102,9 @@ end
       home
     elsif selection == "Back to Favorite Recipes"
       view_favorite_recipes
-    else
-      #puts "#{recipe review for all recipes that match recipe id}"
-      home
+    else 
+      all_user_reviews = FavoriteRecipe.all.where(name: selection)
+      review = all_user_reviews.each{|recipe| puts "'#{recipe.review}' reviewed by: #{User.find_by(id: recipe.user_id).name}"}
     end 
 end 
 
