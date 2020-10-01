@@ -15,10 +15,10 @@ class RecipeApp
 
   def login_or_signup
     puts "Enter your name to sign up or login to Recipalooza!"
-    name = gets.chomp
+    name = gets.chomp.strip.downcase 
     @user = User.all.find{|u|u.name == name}
      if @user == nil 
-      @user = User.create(name: name) 
+      @user = User.create(name: name.to_s.titleize) 
      end 
   end 
 
@@ -42,8 +42,9 @@ class RecipeApp
       if selection == "Home"
         home
       elsif selection == "Add Item"
-        @user.create_pantry_ingredients 
+        @user.create_pantry_ingredients
         view_pantry
+        binding.pry 
       elsif selection == "Search for Recipes"
         search
       elsif selection == "Remove Ingredient"
@@ -79,7 +80,7 @@ class RecipeApp
           view_favorite_recipes
         else
           puts "Type a review for #{selection2}"
-          review = gets.chomp
+          review = gets.chomp.strip.downcase
           reviewed_rec = @user.favorite_recipes.find{|rec| rec.name == selection2}
           reviewed_rec.review= review
           reviewed_rec.save
@@ -104,7 +105,8 @@ class RecipeApp
         elsif @user.fav_recipe_names.include?(selection)
         recipe_id =  @user.favorite_recipes.find {|rec| rec.name == selection}.recipe_id
         url = recipe_instructions(recipe_id)
-        url
+        puts TTY::Link.link_to(selection, url)
+        # url
         home
       end
   end
@@ -119,7 +121,8 @@ class RecipeApp
      selection = recipe_search_prompt
     end
     recipes = get_recipes_from_api(selection)
-    recipe_names = recipes.map { |key,val| key}
+    binding.pry 
+    recipe_names = recipes.map { |key,val| key.to_s.titleize}
     prompt = TTY::Prompt.new
     recipes_select = prompt.multi_select("What recipes would you like to add to your favorites?", (recipe_names))
       recipes_select.each do |rec| 
@@ -172,12 +175,11 @@ def remove_recipe_prompt
   prompt.select("Select a recipe to remove", (menu_prompt))
 end
 
-# def select_favorite_recipes_prompt
-
-# end
 
 def review_recipe_prompt
   prompt = TTY::Prompt.new
   menu_prompt = @user.fav_recipe_names.push("Back to Favorite Recipes", "Back to Home")
-  prompt.select("Select a recipe to review", (menu_prompt))
+  prompt.seleqact("Select a recipe to review", (menu_prompt))
 end
+
+ 

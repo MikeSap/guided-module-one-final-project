@@ -9,3 +9,4 @@ gem "sinatra-activerecord"
 gem 'sqlite3', '~>1.3.6'
 gem 'tty'
 gem 'rest-client'
+gem 'tty-link'
