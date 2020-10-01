@@ -11,3 +11,6 @@ gem 'tty'
 gem 'rest-client'
 gem 'tty-link'
 gem 'ruby2d'
+gem 'tty-font'
+gem "unicode-display_width", ">= 1.3.3"
+gem 'tty-prompt'

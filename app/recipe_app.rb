@@ -2,7 +2,7 @@ class RecipeApp
   attr_reader :user
 
   def run 
-    afplay $idiot_sandwich
+    Beet.go
     welcome
     login_or_signup
     home 
@@ -11,7 +11,9 @@ class RecipeApp
   private 
 
   def welcome  
-    puts "Welcome to Recipalooza!!!"
+    font = TTY::Font.new
+    pastel = Pastel.new
+    puts pastel.yellow(font.write("Welcome To Recipalooza!!!"))
   end
 
   def login_or_signup
@@ -79,6 +81,7 @@ end
   def search
     @user.reload
     if @user.pantry.length < 3
+      $idiot_sandwich.play
       puts "You must have at least 3 items in your pantry before searching."
       view_pantry
     else
