@@ -4,5 +4,9 @@ require_relative "../app/recipe_app.rb"
 $idiot_sandwich = "../lib/sounds/idiot_sandwich.mp3"
 
 
+$idiot_sandwich = Sound.new("lib/sounds/idiot_sandwich_clip.mp3")
+
 app = RecipeApp.new
+$idiot_sandwich.play
 app.run 
+
