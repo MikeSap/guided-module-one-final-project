@@ -112,6 +112,7 @@ class RecipeApp
     home
   end
 
+
 end 
 
 def ingredient_prompt
@@ -125,6 +126,8 @@ def rm_ingredient_prompt
   prompt = TTY::Prompt.new
         selection = prompt.select("Select an ingredient to remove", (menu_prompt))
 end
+
+
 
 
 
