@@ -2,6 +2,7 @@ class RecipeApp
   attr_reader :user
 
   def run 
+    afplay $idiot_sandwich
     welcome
     login_or_signup
     home 

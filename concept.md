@@ -53,19 +53,4 @@ Workflow:
 
  
 
-
-
-
-
-add review and edit reviews (refactor)
-open url in browser when fav recipe is selected
-
-
-
-create view, edit review method -lists recipes where review !=nil 
-review- lists all recipes
-
-add view, edit reviews from the home menu 
-
-make remove methods
-def remove (arg)
+add picture 
