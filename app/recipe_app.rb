@@ -28,7 +28,7 @@ class RecipeApp
           view_favorite_recipes
         elsif selection == "Search Recipes"
           search
-        elsif "View or Edit Reviews"
+        elsif selection == "View or Edit Reviews"
           view_edit_reviews
         else
           exit
@@ -88,42 +88,44 @@ end
     add_favorite_recipes(recipes_select,recipes)
     view_favorite_recipes
   end
-  
 
-
-  def get_save_review(recipe_name)
-    puts "Type a review for #{recipe_name}"
-    review = gets.chomp.strip.downcase
-    reviewed_rec = @user.favorite_recipes.find{|rec| rec.name == recipe_name}
-    reviewed_rec.review= review
-    reviewed_rec.save
-  end 
 
   def view_edit_reviews
     selection = view_edit_review_prompt
-    binding.pry 
     if selection == "Update a Review" 
-        update_review_prompt 
-    elsif selection2 == "Add a Review"
-        @user.favorite_recipes #recipes with reviews 
-        puts "Type a review for #{selection2}"
-        review = gets.chomp.strip.downcase
-        reviewed_rec = @user.favorite_recipes.find{|rec| rec.name == selection2}
-        reviewed_rec.review= review
-        reviewed_rec.save
-    elsif selection4 == "Back to Home"
+      selection2 = update_review_prompt
+      add_update_review(selection2)
+    elsif selection == "Add a Review"
+      selection2 = add_review_prompt
+        add_update_review(selection2)
+    elsif selection == "Back to Home"
       home
-    elsif selection5 == "Back to Favorite Recipes"
+    elsif selection == "Back to Favorite Recipes"
       view_favorite_recipes
     else
-      puts "Type a review for #{selection2}"
-      review = gets.chomp.strip.downcase
-      reviewed_rec = @user.favorite_recipes.find{|rec| rec.name == selection2}
-      reviewed_rec.review= review
-      reviewed_rec.save
+      #puts "#{recipe review for all recipes that match recipe id}"
+      home
     end 
 end 
 
+def add_update_review(selection2)
+  if selection2 == "Back to Home"
+    home
+  elsif selection2 == "Back to View or Edit Reviews"
+    view_edit_reviews
+  else
+    get_save_review(selection2)
+    view_edit_reviews
+  end
+end
+
+def get_save_review(recipe_name)
+  puts "Type a review for #{recipe_name}"
+  review = gets.chomp.strip.downcase
+  reviewed_rec = @user.favorite_recipes.find{|rec| rec.name == recipe_name}
+  reviewed_rec.review= review
+  reviewed_rec.save
+end 
 
 
 def ingredient_prompt
@@ -164,21 +166,34 @@ def remove_recipe_prompt
   prompt.select("Select a recipe to remove", (menu_prompt))
 end
 
-def recipe_with_reviews 
-  rec = @user.favorite_recipes.where(review: nil)
+def recipe_without_reviews 
+  favorite_recipes = @user.favorite_recipes.reload
+  rec = favorite_recipes.where(review: nil)
   rec.map{|rec|rec.name}
 end 
 
 def recipe_with_reviews 
-  rec = @user.favorite_recipes.where(review: !nil)
+ favorite_recipes = @user.favorite_recipes.reload
+  rec = favorite_recipes.where.not(review: nil)
   rec.map{|rec|rec.name}
 end
 
 def view_edit_review_prompt
-  @user.reload
   prompt = TTY::Prompt.new
   menu_prompt = recipe_with_reviews.push("Update a Review", "Add a Review", "Back to Favorite Recipes", "Back to Home")
   prompt.select("Select a recipe to view, update a recipe, or add a review.", (menu_prompt))
+end
+
+def update_review_prompt
+  prompt = TTY::Prompt.new
+  menu_prompt = recipe_with_reviews.push("Back to View or Edit Reviews", "Back to Home")
+  prompt.select("Select a recipe to update it's review", (menu_prompt))
+end
+
+def add_review_prompt
+  prompt = TTY::Prompt.new
+  menu_prompt = recipe_without_reviews.push("Back to View or Edit Reviews", "Back to Home")
+  prompt.select("Select a recipe to review.", (menu_prompt))
 end
 
 def remove_pantry_ingredient_menu
