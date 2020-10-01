@@ -60,4 +60,6 @@ Maybe remove the recipe class all together and tie recipe_ingredients to favorit
 print recipe from favorite recipe menu
 add review and edit reviews
 
-
+find_or_create_by
+.downcase all user input
+.capitalize on reading 

@@ -3,7 +3,6 @@ class User < ActiveRecord::Base
     has_many :pantry_ingredients
     has_many :ingredients, through: :pantry_ingredients
     has_many :favorite_recipes
-    # has_many :recipes, through: :favorite_recipes  
     
     
     def self.find_user(user_name)
@@ -16,6 +15,14 @@ class User < ActiveRecord::Base
 
     def pantry_names
       pantry.map {|ing| ing.name}
+    end
+
+    def fav_recipe_names
+      self.favorite_recipes.map {|fav| fav.name}
+    end
+
+    def fav_recipe_id
+      self.favorite_recipes.map {|fav| fav.recipe_id}
     end
 
 
