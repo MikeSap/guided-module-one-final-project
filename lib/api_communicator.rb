@@ -11,7 +11,7 @@ def get_recipes_from_api(selection)
     url = url1+url2+url3
     response_string = RestClient.get(url)
     response_hash = JSON.parse(response_string)
-    response = response_hash.each_with_object({}){|item, hash| hash[item["title"].to_s] = item["id"].to_i}
+    response = response_hash.each_with_object({}){|item, hash|hash[item["title"].to_s] = item["id"].to_i}
     response
 end 
 def recipe_instructions(recipe_id)

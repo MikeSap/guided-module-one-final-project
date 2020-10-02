@@ -94,7 +94,7 @@ end
   def search
     @user.reload
     if @user.pantry.length < 3
-      $idiot_sandwich.play
+      # $idiot_sandwich.play
       puts "You must have at least 3 items in your pantry before searching."      
       view_pantry
     else
@@ -266,8 +266,8 @@ def search_result(recipes)
 end
 
 def add_favorite_recipes(recipes_select,recipes)
-  recipes_select.each do |rec| 
-    FavoriteRecipe.find_or_create_by(name:rec, user_id: @user.id, recipe_id: recipes[rec])
+  recipes.each do |rec, id| 
+    FavoriteRecipe.find_or_create_by(name:rec, user_id: @user.id, recipe_id: id)
     puts "You added #{rec} to your favorites!"
     end   
 end
