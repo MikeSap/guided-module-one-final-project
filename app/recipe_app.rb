@@ -19,10 +19,12 @@ class RecipeApp
   def login_or_signup
     puts "Enter your name to sign up or login to Recipalooza!"
     name = gets.chomp.strip.downcase 
-    @user = User.all.find_or_create_by(name: name.to_s.titleize)
+    @user = User.all.find_or_create_by(name: name.to_s.titleize)    
   end 
 
   def home
+    system 'clear'
+    welcome
     prompt = TTY::Prompt.new
       selection = prompt.select("What would you like to do today?", (["View Pantry", "View Favorite Recipes", "Search Recipes", "View or Edit Reviews", "Exit"]))
         if selection == "View Pantry"
@@ -36,23 +38,28 @@ class RecipeApp
         else
           exit
         end 
+        system 'clear'
   end
   
 
   def view_pantry
       selection = view_pantry_prompt      
-      if selection == "Home"
+      if selection == "Back to Home"
         home
       elsif selection == "Add Item"
         @user.create_pantry_ingredients
         view_pantry
       elsif selection == "Search for Recipes"
+        system 'clear'
+        welcome
         search
       elsif selection == "Remove Ingredient"
+        system 'clear'
+        welcome
         remove_pantry_ingredient_menu
       else
         #show nutritional facts
-        home
+        view_pantry
     end
   end
 
@@ -60,19 +67,25 @@ class RecipeApp
       selection = view_favorite_recipes_prompt
       if selection == "Back to Home"
         home
+      elsif selection == "Search for more Recipes"
+        system 'clear'
+        welcome
+        search
       elsif selection == "Remove a Recipe"        
         selection2 = remove_recipe_prompt
         if selection2 == "Back to Home"
           home
           elsif selection2 == "Back to Favorite Recipes"
+            system 'clear'
+            welcome
             view_favorite_recipes
           else
-            remove_favorite_recipe(selection2)        
+            remove_favorite_recipe(selection2)      
             view_favorite_recipes
           end
         elsif @user.fav_recipe_names.include?(selection)
-        open_recipe(selection)
-        home
+        open_recipe(selection)    
+        view_favorite_recipes
       end
   end
 end
@@ -81,8 +94,8 @@ end
   def search
     @user.reload
     if @user.pantry.length < 3
-      $idiot_sandwich.play
-      puts "You must have at least 3 items in your pantry before searching."
+      # $idiot_sandwich.play
+      puts "You must have at least 3 items in your pantry before searching."      
       view_pantry
     else
      selection = recipe_search_prompt
@@ -90,23 +103,34 @@ end
     recipes = get_recipes_from_api(selection)
     recipes_select = search_result(recipes)
     add_favorite_recipes(recipes_select,recipes)
+    system 'clear'
+    welcome
     view_favorite_recipes
+  
   end
 
 
   def view_edit_reviews
     selection = view_edit_review_prompt
     if selection == "Update a Review" 
+      system 'clear'
+      welcome
       selection2 = update_review_prompt
       add_update_review(selection2)
     elsif selection == "Add a Review"
+      system 'clear'
+      welcome
       selection2 = add_review_prompt
         add_update_review(selection2)
     elsif selection == "Back to Home"
       home
     elsif selection == "Back to Favorite Recipes"
+      system 'clear'
+      welcome
       view_favorite_recipes
     else 
+      system 'clear'
+      welcome
       all_user_reviews = FavoriteRecipe.all.where(name: selection)
       review = all_user_reviews.each{|recipe| puts "'#{recipe.review}' reviewed by: #{User.find_by(id: recipe.user_id).name}"}
       view_edit_reviews
@@ -160,7 +184,7 @@ end
 def view_favorite_recipes_prompt
   @user.reload
   prompt = TTY::Prompt.new
-  menu_prompt = @user.fav_recipe_names.push("Remove a Recipe", "Back to Home")
+  menu_prompt = @user.fav_recipe_names.push("Search for more Recipes", "Remove a Recipe", "Back to Home")
    prompt.select("Select a recipe to see more info, or return home", (menu_prompt))    
 end
 
