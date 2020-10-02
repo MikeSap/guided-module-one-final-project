@@ -266,8 +266,8 @@ def search_result(recipes)
 end
 
 def add_favorite_recipes(recipes_select,recipes)
-  recipes.each do |rec, id| 
-    FavoriteRecipe.find_or_create_by(name:rec, user_id: @user.id, recipe_id: id)
+  recipes_select.each do |rec| 
+    FavoriteRecipe.find_or_create_by(name:rec, user_id: @user.id, recipe_id: recipes[rec.downcase])
     puts "You added #{rec} to your favorites!"
     end   
 end
