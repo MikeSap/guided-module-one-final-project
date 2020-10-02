@@ -94,7 +94,7 @@ end
   def search
     @user.reload
     if @user.pantry.length < 3
-      $idiot_sandwich.play
+      # $idiot_sandwich.play
       puts "You must have at least 3 items in your pantry before searching."      
       view_pantry
     else
